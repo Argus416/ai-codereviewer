@@ -123,11 +123,23 @@ async function getAIResponse(prompt: string): Promise<Array<{
     presence_penalty: 0,
   };
 
+  const SUPPORTS_JSON_FORMAT = [
+    "gpt-4o",
+    "gpt-4-turbo-preview",
+    "gpt-4-turbo",
+    "gpt-3.5-turbo",
+    "gpt-4-0125-preview",
+    "gpt-4-1106-preview",
+    "gpt-3.5-turbo-0125",
+    "gpt-3.5-turbo-1106",
+  ];
+  
+
   try {
     const response = await openai.chat.completions.create({
       ...queryConfig,
       // return JSON if the model supports it:
-      ...(OPENAI_API_MODEL === "gpt-4-1106-preview"
+      ...(SUPPORTS_JSON_FORMAT.includes(OPENAI_API_MODEL)
         ? { response_format: { type: "json_object" } }
         : {}),
       messages: [
